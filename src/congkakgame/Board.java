@@ -48,23 +48,55 @@ public class Board {
         this.player2_hole = player2_hole;
     }
     
-    public void displayBoard(ArrayList<BoardHole> player1_row, ArrayList<BoardHole> player2_row,int boardSize ){
-       // System.out.printf("-------------------------------------------------------\n| 	");
+    public void displayBoard(ArrayList<BoardHole> player1_row, ArrayList<BoardHole> player2_row,HouseHole player1_hole, HouseHole player2_hole, int boardSize ){
+       for(int i = 0; i < boardSize + 1; i++) {
+			System.out.print("------");
+        }
+	System.out.println("-------");
+        //printing player1_row
+        System.out.print("|     ");
+        for(BoardHole i: player1_row) {
+                if(i.getSeed() >= 10) {
+                        System.out.printf("| "+ i.getSeed()+"   ");
+                } else {
+                        System.out.printf("|  "+ i.getSeed()+"  ");	
+                }
+        }
+       System.out.print("|     |\n");
+       //end of player1_row
+       //printing row for houseHole
+        if(player1_hole.getSeed() >= 10) {
+                System.out.printf("| %d  |", player1_hole.getSeed());
+        } else {
+                System.out.printf("|  %d  |", player2_hole.getSeed());
+        }
+		
+        for(int i = 0; i < boardSize - 1; i++) {
+                System.out.printf("------");
+        }
+        System.out.print("-----");
+	if(player1_hole.getSeed() >= 10) {
+                System.out.printf("| %d  |", player1_hole.getSeed());
+        } else {
+                System.out.printf("|  %d  |", player2_hole.getSeed());
+        }	
+        //end of printing row for house hole
+        //printing row for player2 holes
+        System.out.print("\n|     ");
+        for(BoardHole i: player2_row) {
+                if(i.getSeed() >= 10) {
+                        System.out.printf("| "+ i.getSeed()+"   ");
+                } else {
+                        System.out.printf("|  "+ i.getSeed()+"  ");	
+                }
+        }
+        System.out.print("|     |\n");
+        for(int i = 0; i < boardSize + 1; i++) {
+			System.out.print("------");
+        }
+	System.out.println("-------");
+
     }
-//   		 
-           // System.out.println("| "+ player1_row[]);    
-        
-   	 
-//   	 System.out.print("| 	|\n");
-//   	 System.out.printf("|  %d  |-----------------------------------------|  %d  |\n| 	", player2, player1);
-//   	 for(Board values i : player2_hole) {
-//   		 System.out.printf("|  %d  ", values);    
-//   	 }
-//   	 System.out.print("| 	|\n");
-//   	 System.out.println("-------------------------------------------------------\n");
-//         System.out.println(playerName);
-//    }
 }
-   
     
 

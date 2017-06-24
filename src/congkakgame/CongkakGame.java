@@ -19,6 +19,7 @@ public class CongkakGame {
         selectMode();
         setBoard();
         Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole);
+        gameBoard.displayBoard(player1_row, player2_row,player1_hole,player2_hole, boardSize);
     }
     
     private static void welcomeMessage(){
@@ -45,7 +46,7 @@ public class CongkakGame {
 			beanNum = input.nextInt();
 		}	// end while
        
-        //Creating Holes for Game Board
+        //Creating requested holes with the user's requested bean number for Game Board
         for(int i =0; i < boardSize; i++){
             player1_row.add(new BoardHole(beanNum));
             }

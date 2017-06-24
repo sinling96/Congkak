@@ -12,6 +12,7 @@ public class CongkakGame {
     public static HouseHole player2_hole = new HouseHole(0);
     public static int mode;
     public static int boardSize;
+    public static int beanNum;
     
     public static void main(String[] args) {
         welcomeMessage();
@@ -28,16 +29,31 @@ public class CongkakGame {
 
     public static void setBoard(){
        System.out.println("Setting up board...");
-       System.out.flush();  
        System.out.print("Please enter your board size (3 - 9): ");	
        boardSize = input.nextInt();
-           for(int i =0; i < boardSize; i++){
-                player1_row.add(new BoardHole(4));
+       while(boardSize < 3 || boardSize > 9) {	// Check for out of range inputs
+			System.out.println("Error board size input");
+			System.out.print("Please enter your board size (3 - 9): ");
+			boardSize = input.nextInt();
+		}	// end while
+       
+       System.out.print("How many beans in each hole (2 - 7): ");	// Prompt input
+		beanNum = input.nextInt();	// Get user input and store in beans
+		while(beanNum < 2 || beanNum > 7) {	// Check for out of range inputs
+			System.out.println("Error beans number input");
+			System.out.print("How many beans in each hole (2 - 7): ");	// Prompt input
+			beanNum = input.nextInt();
+		}	// end while
+       
+        //Creating Holes for Game Board
+        for(int i =0; i < boardSize; i++){
+            player1_row.add(new BoardHole(beanNum));
             }
-            for(int i =0; i < boardSize; i++){
-            player2_row.add(new BoardHole(4));
+        for(int i =0; i < boardSize; i++){
+            player2_row.add(new BoardHole(beanNum));
             }
     }
+         
     
     public static int selectMode(){
         System.out.println("Select game mode.\n1-Player1 Vs Player2\n2-Player1 Vs Computer");

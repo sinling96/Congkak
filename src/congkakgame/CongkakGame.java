@@ -6,45 +6,42 @@ import java.util.Scanner;
 
 public class CongkakGame {
     public static final Scanner input = new Scanner(System.in);
-    
+    public static ArrayList<BoardHole> player1_row = new ArrayList<BoardHole>();
+    public static ArrayList<BoardHole> player2_row = new ArrayList<BoardHole>();
+    public static HouseHole player1_hole = new HouseHole(0);
+    public static HouseHole player2_hole = new HouseHole(0);
+    public static int mode;
+    public static int boardSize;
     
     public static void main(String[] args) {
         welcomeMessage();
         selectMode();
-        Board gameBoard = new Board();
-        gameBoard.setBoard();
-        //gameBoard.displayBoard(player1_row, player2_row);
-        
-        
-        
-        
+        setBoard();
+        Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole);
     }
+    
     private static void welcomeMessage(){
      System.out.println("========================");
      System.out.println("Welcome to Congkak Game!");
      System.out.println("========================");
     }    
 
-//    public static void setBoard(){
-//        Board gameBoard = new Board(2);
-//        ArrayList<BoardHole> player1_row = new ArrayList<BoardHole>();
-//        ArrayList<BoardHole> player2_row = new ArrayList<BoardHole>();
-//        
-//        for(int i =0; i < 7; i++){
-//            player1_row.add(new BoardHole(4));
-//        }
-//        
-//        for(int i =0; i < 7; i++){
-//            player2_row.add(new BoardHole(4));
-//        }
-//        
-//        Board player1_hole = new PlayerHole(0);
-//        Board player2_hole = new PlayerHole(0);
-//    }
+    public static void setBoard(){
+       System.out.println("Setting up board...");
+       System.out.flush();  
+       System.out.print("Please enter your board size (3 - 9): ");	
+       boardSize = input.nextInt();
+           for(int i =0; i < boardSize; i++){
+                player1_row.add(new BoardHole(4));
+            }
+            for(int i =0; i < boardSize; i++){
+            player2_row.add(new BoardHole(4));
+            }
+    }
     
-    public static void selectMode(){
+    public static int selectMode(){
         System.out.println("Select game mode.\n1-Player1 Vs Player2\n2-Player1 Vs Computer");
-        int mode = input.nextInt();
+        mode = input.nextInt();
         if(mode==1){
             System.out.println("Enter Player1's name:");
             String player1Name = input.next();
@@ -57,13 +54,13 @@ public class CongkakGame {
             String player1Name = input.next();
             Player P1 = new Player(player1Name);
         }
+        return mode;
     }
-    
-    
-    
+   
 }
-
-
+    
+    
+//}
 //
 // Scanner inputFile = new Scanner(new File("C:/Test/test.txt"));
 //   Map<String, Integer> counts = new HashMap<>();

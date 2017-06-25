@@ -13,15 +13,18 @@ public class CongkakGame {
     public static int mode;
     public static int boardSize;
     public static int beanNum;
+    public static int playerTurn = 1;
+    public static int holeSelected;
     
     public static void main(String[] args) {
         welcomeMessage();
-        selectMode();
+        mode = selectMode();   
         setBoard();
         Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole);
         gameBoard.displayBoard(player1_row, player2_row,player1_hole,player2_hole, boardSize);
-    }
-    
+        holeSelected = gameBoard.selectHole(mode,playerTurn, boardSize);
+        
+    }    
     private static void welcomeMessage(){
      System.out.println("========================");
      System.out.println("Welcome to Congkak Game!");
@@ -54,22 +57,22 @@ public class CongkakGame {
             player2_row.add(new BoardHole(beanNum));
             }
     }
-         
-    
+           
     public static int selectMode(){
         System.out.println("Select game mode.\n1-Player1 Vs Player2\n2-Player1 Vs Computer");
         mode = input.nextInt();
         if(mode==1){
             System.out.println("Enter Player1's name:");
             String player1Name = input.next();
-            Player P1 = new Player(player1Name);
+            Player P1 = new Player(player1Name,1);
             System.out.println("Enter Player2's name:");
             String player2Name = input.next();
-            Player P2 = new Player(player2Name);
+            Player P2 = new Player(player2Name,2);
         }else if(mode==2){
             System.out.println("Enter Player1's name:");
             String player1Name = input.next();
-            Player P1 = new Player(player1Name);
+            Player P1 = new Player(player1Name,1);
+            Player P2 = new Player("Computer",2);
         }
         return mode;
     }

@@ -2,12 +2,14 @@
 package congkakgame;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Board {
     ArrayList<BoardHole> player1_row = new ArrayList<BoardHole>();
     ArrayList<BoardHole> player2_row = new ArrayList<BoardHole>();
     HouseHole player1_hole = new HouseHole(0);
     HouseHole player2_hole = new HouseHole(0);
+    public final Scanner input = new Scanner(System.in);
     
     public Board(ArrayList<BoardHole> p1BoardHole, ArrayList<BoardHole> p2BoardHole,HouseHole p1HouseHole, HouseHole p2HouseHole){
         this.player1_row = p1BoardHole;
@@ -95,8 +97,54 @@ public class Board {
 			System.out.print("------");
         }
 	System.out.println("-------");
-
+        // end of printing row for player2_row
+    }
+    
+    public int selectHole(int mode, int playerTurn, int boardSize){
+        int move = -1; // Initialize move variable to be returned
+        if(mode ==1 || playerTurn ==1){ // for player (not computer)
+            while(move < 0 || move > boardSize - 1) { // while loop check if the move is valid (only permit values between 1 to (max boardsize) inclusive)
+			try { // try clause, catch error input (alphabet or symbol)
+                                System.out.printf("Player "+ playerTurn +", select the hole you would like to scoop (1 - %d): ", boardSize);// Prompt user to input a move
+                                move = Integer.parseInt(input.next()); // Take in user input
+				move--;
+				
+				if(move < 0 || move > boardSize - 1) {
+					System.out.println("Invalid move!!"); // Prompt error
+					continue;
+                                } else if (playerTurn == 1 && (player1_row.get(move).equals(0))) { //cannot choose the hole without seed
+					System.out.println("Invalid move!!"); // Prompt error
+					move = -1;
+				} else if (playerTurn == 2  && (player2_row.get(move).equals(0))) { // cannot choose the hole without seed
+					System.out.println("Invalid move!!"); // Prompt error
+					move = -1;
+				} else if(move >= 0 && move <= boardSize - 1) { // Check for valid move
+					break; // Break the loop if the move is valid
+				}
+				
+                            } catch (NumberFormatException e) { // in case of error input (not number or too big/small number)
+				System.out.println("Invalid input!!"); // Prompt error
+				System.out.println("Please enter a valid number!!"); // Prompt error
+                                }
+            } // end while
+		
+        }else if(mode ==2 && playerTurn ==2){ // for computer to choose seed
+		while(move < 0 || move > boardSize - 1) { // while loop check if the move is valid (only permit values between 1 to 7 inclusive)	
+			move = (int) (Math.random() * boardSize);		
+			if(move < 0 || move > boardSize - 1) {
+				continue;
+			} else if (player2_row.get(move).equals(0)) {
+				move = -1;
+			} else if(move >= 0 && move <= boardSize - 1) { // Check for valid move
+				break; // Break the loop if the move is valid
+			}		
+		} // end while
+        }
+       	return move; // Return valid user input
     }
 }
+    
+
+
     
 

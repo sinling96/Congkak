@@ -2,8 +2,11 @@
 package congkakgame;
 public class Player {
     String name;
-    public Player(String name){
-        name = this.name;
+    private final int playerTurn;
+    
+    public Player(String name, int playerTurn){
+        this.name = name;
+        this.playerTurn = playerTurn;
     }
 
     public String getName() {

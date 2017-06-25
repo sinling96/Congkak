@@ -14,7 +14,7 @@ public class CongkakGame {
     public static int boardSize;
     public static int beanNum;
     public static int playerTurn = 1;
-    public static int holeSelected;
+    public static int index;
     public static int beanInHand;
     
     public static void main(String[] args) {
@@ -23,11 +23,11 @@ public class CongkakGame {
         setBoard();
         Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole);
         gameBoard.displayBoard(player1_row, player2_row,player1_hole,player2_hole, boardSize);
-        holeSelected = gameBoard.selectHole(mode,playerTurn, boardSize);
-        beanInHand = player1_row.get(holeSelected).getBean();//get the number of bean taken from the hole selected
-        player1_row.get(holeSelected).removeAll(); // take all the seed from the hole selected by the user
+        index = gameBoard.selectHole(mode,playerTurn, boardSize);
+        beanInHand = player1_row.get(index).getBean();//get the number of bean taken from the hole selected
+        player1_row.get(index).removeAll();// take all the seed from the hole selected by the user
         gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-        sowing(beanInHand,playerTurn,boardSize,holeSelected);
+        sowing();
          gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
         //switch player playerTurn = 2; 
     }    
@@ -82,34 +82,46 @@ public class CongkakGame {
         }
         return mode;
     }
-    public static void sowing(int beanInHand,int playerTurn,int boardSize,int holeSelected){
+    public static void sowing(){
+        
         boolean leftSow = true;
+        boolean end = false;
         if(playerTurn ==1){
             leftSow = true;
         }else leftSow = false;
         
-        while(beanInHand > 0) {	// while there is still beans in hand
+        while(beanInHand >0) {	// while there is still beans in hand
             if(leftSow == true) {	// player 1 turn
-                holeSelected--;
-                player1_row.get(holeSelected).addBean();      
-                beanInHand--;
-                if(beanInHand>0 && holeSelected==0){
+                if((index)>0){
+                    index--;
+                    player1_row.get(index).addBean();      
+                    beanInHand--;
+                    if(beanInHand>0 && (index)==0){
+                        leftSow = false;
+                        index=-1;
+                    }
+                }else{
                     leftSow = false;
-                    holeSelected =-1;
+                    index = -1;
                 }
             }
             if(leftSow == false){
-                holeSelected++;
-                player2_row.get(holeSelected).addBean();
-                beanInHand--;
-                if(beanInHand>0 && holeSelected==boardSize){
-                   leftSow = true;
-                   holeSelected=boardSize+1;
+                index++;
+                if(index>=0 || index<boardSize){
+                    player2_row.get(index).addBean();
+                    beanInHand--;}
+                    if(beanInHand>0 && index==boardSize-1){
+                       leftSow = true;
+                       index = boardSize;
+                    }
+                }else{
+                    leftSow = true;
+                    index = boardSize;
                 }
-            }
         }
-    }
+    }   
 }
+
 
     
     

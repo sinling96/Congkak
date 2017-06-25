@@ -2,21 +2,21 @@
 package congkakgame;
 
 public class Hole {
-    int seed;
-    public Hole(int seed){
-        this.seed= seed ;
+    int bean;
+    public Hole(int bean){
+        this.bean = bean ;
     }
 
-    public int getSeed() {
-        return seed;
+    public int getBean() {
+        return bean;
     }
 
-    public void setSeed(int seed) {
-        this.seed = seed;
+    public void setBean(int bean) {
+        this.bean = bean;
     }
     
-    public void addSeed(){
-        this.seed = this.seed +1;
+    public void addBean(){
+        this.bean = this.bean +1;
     }
 
     

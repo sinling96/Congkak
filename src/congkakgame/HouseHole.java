@@ -7,7 +7,7 @@ public class HouseHole extends Hole {
         super(seed);
     }
     // overriding method addSeed in Hole.java
-    public void addSeed(int seed) {
-        this.seed = this.seed + seed;
+    public void addBean(int bean) {
+        this.bean = this.bean + bean;
     }
 }

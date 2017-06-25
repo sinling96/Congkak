@@ -49,7 +49,7 @@ public class Board {
     public void setPlayer2_hole(HouseHole player2_hole) {
         this.player2_hole = player2_hole;
     }
-    
+
     public void displayBoard(ArrayList<BoardHole> player1_row, ArrayList<BoardHole> player2_row,HouseHole player1_hole, HouseHole player2_hole, int boardSize ){
        for(int i = 0; i < boardSize + 1; i++) {
 			System.out.print("------");
@@ -58,38 +58,38 @@ public class Board {
         //printing player1_row
         System.out.print("|     ");
         for(BoardHole i: player1_row) {
-                if(i.getSeed() >= 10) {
-                        System.out.printf("| "+ i.getSeed()+"   ");
+                if(i.getBean() >= 10) {
+                        System.out.printf("| "+ i.getBean()+"   ");
                 } else {
-                        System.out.printf("|  "+ i.getSeed()+"  ");	
+                        System.out.printf("|  "+ i.getBean()+"  ");	
                 }
         }
        System.out.print("|     |\n");
        //end of player1_row
        //printing row for houseHole
-        if(player1_hole.getSeed() >= 10) {
-                System.out.printf("| %d  |", player1_hole.getSeed());
+        if(player1_hole.getBean() >= 10) {
+                System.out.printf("| %d  |", player1_hole.getBean());
         } else {
-                System.out.printf("|  %d  |", player2_hole.getSeed());
+                System.out.printf("|  %d  |", player2_hole.getBean());
         }
 		
         for(int i = 0; i < boardSize - 1; i++) {
                 System.out.printf("------");
         }
         System.out.print("-----");
-	if(player1_hole.getSeed() >= 10) {
-                System.out.printf("| %d  |", player1_hole.getSeed());
+	if(player1_hole.getBean() >= 10) {
+                System.out.printf("| %d  |", player1_hole.getBean());
         } else {
-                System.out.printf("|  %d  |", player2_hole.getSeed());
+                System.out.printf("|  %d  |", player2_hole.getBean());
         }	
         //end of printing row for house hole
         //printing row for player2 holes
         System.out.print("\n|     ");
         for(BoardHole i: player2_row) {
-                if(i.getSeed() >= 10) {
-                        System.out.printf("| "+ i.getSeed()+"   ");
+                if(i.getBean() >= 10) {
+                        System.out.printf("| "+ i.getBean()+"   ");
                 } else {
-                        System.out.printf("|  "+ i.getSeed()+"  ");	
+                        System.out.printf("|  "+ i.getBean()+"  ");	
                 }
         }
         System.out.print("|     |\n");
@@ -142,6 +142,8 @@ public class Board {
         }
        	return move; // Return valid user input
     }
+    
+   
 }
     
 

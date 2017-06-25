@@ -15,6 +15,7 @@ public class CongkakGame {
     public static int beanNum;
     public static int playerTurn = 1;
     public static int holeSelected;
+    public static int beanInHand;
     
     public static void main(String[] args) {
         welcomeMessage();
@@ -23,7 +24,12 @@ public class CongkakGame {
         Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole);
         gameBoard.displayBoard(player1_row, player2_row,player1_hole,player2_hole, boardSize);
         holeSelected = gameBoard.selectHole(mode,playerTurn, boardSize);
-        
+        beanInHand = player1_row.get(holeSelected).getBean();//get the number of bean taken from the hole selected
+        player1_row.get(holeSelected).removeAll(); // take all the seed from the hole selected by the user
+        gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
+        sowing(beanInHand,playerTurn,boardSize,holeSelected);
+         gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
+        //switch player playerTurn = 2; 
     }    
     private static void welcomeMessage(){
      System.out.println("========================");
@@ -76,8 +82,35 @@ public class CongkakGame {
         }
         return mode;
     }
-   
+    public static void sowing(int beanInHand,int playerTurn,int boardSize,int holeSelected){
+        boolean leftSow = true;
+        if(playerTurn ==1){
+            leftSow = true;
+        }else leftSow = false;
+        
+        while(beanInHand > 0) {	// while there is still beans in hand
+            if(leftSow == true) {	// player 1 turn
+                holeSelected--;
+                player1_row.get(holeSelected).addBean();      
+                beanInHand--;
+                if(beanInHand>0 && holeSelected==0){
+                    leftSow = false;
+                    holeSelected =-1;
+                }
+            }
+            if(leftSow == false){
+                holeSelected++;
+                player2_row.get(holeSelected).addBean();
+                beanInHand--;
+                if(beanInHand>0 && holeSelected==boardSize){
+                   leftSow = true;
+                   holeSelected=boardSize+1;
+                }
+            }
+        }
+    }
 }
+
     
     
 //}

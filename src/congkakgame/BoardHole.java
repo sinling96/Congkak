@@ -3,10 +3,10 @@ package congkakgame;
 
 public class BoardHole extends Hole{
     
-    public BoardHole(int seed){
-        super(seed);
+    public BoardHole(int bean){
+        super(bean);
     }
-    public void RemoveAll(){
-        seed = 0;
+    public void removeAll(){
+        bean = 0;
     }
 }

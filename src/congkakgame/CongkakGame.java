@@ -27,9 +27,8 @@ public class CongkakGame {
         Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole);
         gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
         do{    
+            index = gameBoard.selectHole(mode,playerTurn, boardSize);
             do{
-
-                index = gameBoard.selectHole(mode,playerTurn, boardSize);
                 if(playerTurn ==1){
                     leftSow = true;
                     beanInHand = player1_row.get(index).getBean();//get the number of bean taken from the hole selected
@@ -44,15 +43,13 @@ public class CongkakGame {
                     gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
                     checkNextHole = checkNextHole();
                 }while(beanInHand>0);
-                   
-               // }while(checkNextHole == true);//continue if the next hole is not empty
             }while(checkNext2Hole()==false);//discontinue if the next hole is empty 
             if(playerTurn ==1){
                 playerTurn =2;
             }else playerTurn =1;
             status = checkGameStatus();
             gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-        }while(status == true);
+        }while(status == false);//stop while all boardholes are empty
        
     }    
     private static void welcomeMessage(){
@@ -181,23 +178,29 @@ public class CongkakGame {
             if(leftSow == true){
                 if(index > 1 && player1_row.get(index-1).getBean()==0){
                     totalBean = player1_row.get(index-2).getBean();
+                    player1_row.get(index-2).removeAll();
                     check2Hole = true;
                 }else if(index == 1 && player1_row.get(index-1).getBean()==0){
                     totalBean = player2_row.get(index-1).getBean();
+                    player2_row.get(index-1).removeAll();
                     check2Hole = true;
                 }else if(index == 0 && player2_row.get(index).getBean()==0){
                     totalBean = player2_row.get(index+1).getBean();
+                    player2_row.get(index+1).removeAll();
                     check2Hole = true;
                 }
             }else if(leftSow == false){
                 if(index < (boardSize-1) && player2_row.get(index+1).getBean()==0){
                     totalBean = player2_row.get(index+2).getBean();
+                    player2_row.get(index+2).removeAll();
                     check2Hole = true;
                 }else if(index ==(boardSize-2) && player2_row.get(index+1).getBean()==0){
                     totalBean = player1_row.get(index+1).getBean();
+                    player1_row.get(index+1).removeAll();
                     check2Hole = true;
                 }else if(index == (boardSize-1) && player1_row.get(index).getBean()==0){
                     totalBean = player1_row.get(index-1).getBean();
+                    player1_row.get(index-1).removeAll();
                     check2Hole = true;
                 }
             }
@@ -221,7 +224,7 @@ public class CongkakGame {
         }
         
         if(count == (boardSize * 2)){
-            status = true;
+            status = true;// all boardholes are empty
         }else status = false;
         
         return status;

@@ -70,15 +70,15 @@ public class Board {
         if(player1_hole.getBean() >= 10) {
                 System.out.printf("| %d  |", player1_hole.getBean());
         } else {
-                System.out.printf("|  %d  |", player2_hole.getBean());
+                System.out.printf("|  %d  |", player1_hole.getBean());
         }
 		
         for(int i = 0; i < boardSize - 1; i++) {
                 System.out.printf("------");
         }
         System.out.print("-----");
-	if(player1_hole.getBean() >= 10) {
-                System.out.printf("| %d  |", player1_hole.getBean());
+	if(player2_hole.getBean() >= 10) {
+                System.out.printf("| %d  |", player2_hole.getBean());
         } else {
                 System.out.printf("|  %d  |", player2_hole.getBean());
         }	

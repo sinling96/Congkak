@@ -82,26 +82,35 @@ public class CongkakGame {
     }    
 
     public static void setBoard(){
-       System.out.println("Setting up board...");
+       
         player1_row.clear();
         player2_row.clear();
         player1_hole.setBean(0);
         player2_hole.setBean(0);
-       System.out.print("Please enter your board size (3 - 9): ");	
-       boardSize = input.nextInt();
-       while(boardSize < 3 || boardSize > 9) {	// Check for out of range inputs
-			System.out.println("Error board size input");
-			System.out.print("Please enter your board size (3 - 9): ");
-			boardSize = input.nextInt();
-		}	// end while
+        System.out.println("Select:\n1-Basic Board\n2-Intermediate Board\n");
+        int selectBoard = input.nextInt();
+        if(selectBoard == 1){
+            boardSize = 7;
+            beanNum =4;
+        }else if(selectBoard ==2){
+            System.out.print("Please enter your board size (3 - 9): ");	
+            boardSize = input.nextInt();
+            while(boardSize < 3 || boardSize > 9) {	// Check for out of range inputs
+                            System.out.println("Error board size input");
+                            System.out.print("Please enter your board size (3 - 9): ");
+                            boardSize = input.nextInt();
+            }	// end while
+
+            System.out.print("How many beans in each hole (2 - 7): ");	// Prompt input
+            beanNum = input.nextInt();	// Get user input and store in beans
+            while(beanNum < 2 || beanNum > 7) {	// Check for out of range inputs
+                    System.out.println("Error beans number input");
+                    System.out.print("How many beans in each hole (2 - 7): ");	// Prompt input
+                    beanNum = input.nextInt();
+            }	// end while
+        }
+        System.out.println("Setting up board...");
        
-       System.out.print("How many beans in each hole (2 - 7): ");	// Prompt input
-		beanNum = input.nextInt();	// Get user input and store in beans
-		while(beanNum < 2 || beanNum > 7) {	// Check for out of range inputs
-			System.out.println("Error beans number input");
-			System.out.print("How many beans in each hole (2 - 7): ");	// Prompt input
-			beanNum = input.nextInt();
-		}	// end while
        
         //Creating requested holes with the user's requested bean number for Game Board
         for(int i =0; i < boardSize; i++){

@@ -17,24 +17,43 @@ public class CongkakGame {
     public static int index;
     public static int beanInHand;      
     public static boolean leftSow = true;
-    public static boolean end = false;
+    public static boolean status = false;
+    public static boolean checkNextHole = false; 
     
     public static void main(String[] args) {
         welcomeMessage();
         mode = selectMode();   
         setBoard();
         Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole);
-        gameBoard.displayBoard(player1_row, player2_row,player1_hole,player2_hole, boardSize);
-        index = gameBoard.selectHole(mode,playerTurn, boardSize);
-        beanInHand = player1_row.get(index).getBean();//get the number of bean taken from the hole selected
-        player1_row.get(index).removeAll();// take all the seed from the hole selected by the user
         gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-        sowing();
-        gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-        checkNextHole();
-        sowing();
-        gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-        //switch player playerTurn = 2; 
+        do{    
+            do{
+
+                index = gameBoard.selectHole(mode,playerTurn, boardSize);
+                if(playerTurn ==1){
+                    leftSow = true;
+                    beanInHand = player1_row.get(index).getBean();//get the number of bean taken from the hole selected
+                    player1_row.get(index).removeAll();// take all the seed from the hole selected by the user
+                }else{
+                    leftSow = false;
+                    beanInHand = player2_row.get(index).getBean();
+                    player2_row.get(index).removeAll();
+                }
+                do{
+                    sowing();
+                    gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
+                    checkNextHole = checkNextHole();
+                }while(beanInHand>0);
+                   
+               // }while(checkNextHole == true);//continue if the next hole is not empty
+            }while(checkNext2Hole()==false);//discontinue if the next hole is empty 
+            if(playerTurn ==1){
+                playerTurn =2;
+            }else playerTurn =1;
+            status = checkGameStatus();
+            gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
+        }while(status == true);
+       
     }    
     private static void welcomeMessage(){
      System.out.println("========================");
@@ -88,9 +107,7 @@ public class CongkakGame {
         return mode;
     }
     public static void sowing(){
-        if(playerTurn ==1){
-            leftSow = true;
-        }else leftSow = false;
+
         while(beanInHand >0) {      // while there is still beans in hand
             if(leftSow == true) {	// player 1 turn
                 if(index>0){
@@ -122,27 +139,94 @@ public class CongkakGame {
             }
         } 
     }
-    public static void checkNextHole(){
+    public static boolean checkNextHole(){
         if(beanInHand ==0){
             if(leftSow == true){
                 if(index>0 && player1_row.get(index-1).getBean()!=0){ //check whether the next hole has bean or not
                     beanInHand += player1_row.get(index-1).getBean(); 
-                    player1_row.get(index-1).removeAll();
+                    System.out.println("1.You get extra "+player1_row.get(index-1).getBean()+" beans");
+                    player1_row.get(index-1).removeAll(); 
+                    index -=1;
+                    checkNextHole = true;
                 }else if(index ==0 && player2_row.get(index).getBean()!=0){//if next hole is 0(player2row) and does not contain anything
                     beanInHand += player2_row.get(index).getBean();
+                    System.out.println("2.You get extra "+player2_row.get(index).getBean()+" beans");
                     player2_row.get(index).removeAll();
+                    leftSow = false;
+                    checkNextHole = true;
                 }
             }else if (leftSow == false){
                 if(index < (boardSize-1) && player2_row.get(index+1).getBean()!=0){
                     beanInHand += player2_row.get(index+1).getBean();
+                    System.out.println("3.You get extra "+player2_row.get(index+1).getBean()+" beans");
                     player2_row.get(index+1).removeAll();
+                    index+=1;
+                    checkNextHole = true;
                 }else if(index == (boardSize-1) && player1_row.get(index).getBean()!=0){ 
                     beanInHand += player1_row.get(index).getBean();
+                    System.out.println("4.You get extra "+player1_row.get(index).getBean()+" beans");
                     player1_row.get(index).removeAll();
+                    leftSow = true;
+                    checkNextHole = true;
                 }
             }
         }
+        return checkNextHole;
     }
+    public static boolean checkNext2Hole(){
+        //if next hole is empty ,take all of the bean in the next hole, put into househole
+        boolean check2Hole= false;// false means next Hole contains bean
+        int totalBean = 0;
+        if(beanInHand==0){
+            if(leftSow == true){
+                if(index > 1 && player1_row.get(index-1).getBean()==0){
+                    totalBean = player1_row.get(index-2).getBean();
+                    check2Hole = true;
+                }else if(index == 1 && player1_row.get(index-1).getBean()==0){
+                    totalBean = player2_row.get(index-1).getBean();
+                    check2Hole = true;
+                }else if(index == 0 && player2_row.get(index).getBean()==0){
+                    totalBean = player2_row.get(index+1).getBean();
+                    check2Hole = true;
+                }
+            }else if(leftSow == false){
+                if(index < (boardSize-1) && player2_row.get(index+1).getBean()==0){
+                    totalBean = player2_row.get(index+2).getBean();
+                    check2Hole = true;
+                }else if(index ==(boardSize-2) && player2_row.get(index+1).getBean()==0){
+                    totalBean = player1_row.get(index+1).getBean();
+                    check2Hole = true;
+                }else if(index == (boardSize-1) && player1_row.get(index).getBean()==0){
+                    totalBean = player1_row.get(index-1).getBean();
+                    check2Hole = true;
+                }
+            }
+           if(playerTurn ==1){
+               player1_hole.addBean(totalBean);
+           }else player2_hole.addBean(totalBean);     
+        }
+        return check2Hole;
+    }
+    public static boolean checkGameStatus(){
+        int count = 0; 
+        for(BoardHole i: player1_row) {
+                if(i.getBean() == 0) {
+                        count++;
+                } 
+        }
+        for(BoardHole i: player2_row){
+            if(i.getBean() == 0){
+                count++;
+            }
+        }
+        
+        if(count == (boardSize * 2)){
+            status = true;
+        }else status = false;
+        
+        return status;
+    }
+    
 }
 
 

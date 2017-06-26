@@ -15,9 +15,7 @@ public class Hole {
         this.bean = bean;
     }
     
-    public void addBean(){
-        this.bean = this.bean +1;
-    }
+
 
     
 }

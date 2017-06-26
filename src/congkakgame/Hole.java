@@ -6,16 +6,10 @@ public class Hole {
     public Hole(int bean){
         this.bean = bean ;
     }
-
     public int getBean() {
         return bean;
     }
-
     public void setBean(int bean) {
         this.bean = bean;
-    }
-    
-
-
-    
+    }   
 }

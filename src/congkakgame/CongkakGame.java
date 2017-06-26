@@ -11,26 +11,25 @@ public class CongkakGame {
     public static ArrayList<BoardHole> player2_row = new ArrayList<BoardHole>();
     public static HouseHole player1_hole = new HouseHole(0);
     public static HouseHole player2_hole = new HouseHole(0);
-    public static Player P1;
-    public static Player P2;
     public static int playerTurn = 1;
     public static int index;
     public static int beanInHand;      
     public static boolean leftSow = true;
-    public static int mode = -1;
+    public static String playNext;
+    
     public static int boardSize;
     
     public static void main(String[] args) {
  
         welcomeMessage();
         do{
-           selectMode();
-           Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole, P1, P2);
+           Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole);
+           gameBoard.selectMode();
            gameBoard.setBoard();
            boardSize = gameBoard.getBoardSize();
            gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
             do{    
-                index = gameBoard.selectHole(mode,playerTurn, boardSize);
+                index = gameBoard.selectHole(playerTurn, boardSize);
                 do{
                     if(playerTurn ==1){
                         leftSow = true;
@@ -55,10 +54,9 @@ public class CongkakGame {
             }while(gameBoard.getStatus() ==0);//none of the players' boardholes are all empty
             if(gameBoard.getStatus()!=0){
                 gameBoard.getResult();
-                input.nextLine();
-                askForNextPlay();
+                playNext = askForNextPlay();
             }
-        }while(askForNextPlay().equalsIgnoreCase("Y")  );
+        }while(playNext.equalsIgnoreCase("Y")  );
     }    
     
     private static void welcomeMessage(){
@@ -66,36 +64,6 @@ public class CongkakGame {
      System.out.println("Welcome to Congkak Game!");
      System.out.println("========================");
     }    
-    
-    public static void selectMode(){
-        System.out.println("Select game mode.\n1-Player1 Vs Player2\n2-Player1 Vs Computer");
-        while(mode == -1){
-            try{
-                mode = input.nextInt();
-                if(mode==1){
-                    System.out.println("Enter Player1's name:");
-                    String player1Name = input.next();
-                    P1.setName(player1Name);
-                    System.out.println("Enter Player2's name:");
-                    String player2Name = input.next();
-                    P2.setName(player2Name);
-                    break;
-                }else if(mode==2){
-                    System.out.println("Enter Player1's name:");
-                    String player1Name = input.next();
-                    P1.setName(player1Name);
-                    P2.setName("Computer");
-                    break;
-                }else{
-                    mode = -1;
-                    System.out.println("Invalid option\nPlease enter a valid option.");
-                }  
-            }catch(InputMismatchException e){
-                input.nextLine();
-                System.out.println("Invalid option\nPlease enter a valid option.");
-            }
-        } 
-    }
 
     public static void sowing(){
         while(beanInHand >0) {      // while there is still beans in hand
@@ -197,13 +165,13 @@ public class CongkakGame {
            if(playerTurn ==1){
                if(totalBean!=0){
                    player1_hole.addBean(totalBean);
-                   System.out.println("Congratulations!\n"+"Player 1 earned " + totalBean + " beans.");
-               }else System.out.println("Sorry, Player 1.\n No bean is awarded.");
+                   System.out.println("Congratulations!"+ Board.player1Name+"\nYou earned " + totalBean + " beans.");
+               }else System.out.println("Sorry."+ Board.player1Name+ "\n You earned 0 bean");
            }else{
                if(totalBean != 0){
                     player2_hole.addBean(totalBean);     
-                    System.out.println("Congratulations!\n"+"Player 2 earned " + totalBean + " beans.");
-               }else System.out.println("Sorry, Player 2.\nNo bean is awarded.");
+                    System.out.println("Congratulations!"+ Board.player2Name+"\nYou earned " + totalBean + " beans.");
+               }else System.out.println("Sorry."+ Board.player2Name+"\nNo bean is awarded.");
             } 
         }
         return check2Hole;

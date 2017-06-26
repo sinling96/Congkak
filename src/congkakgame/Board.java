@@ -10,8 +10,6 @@ public class Board {
     ArrayList<BoardHole> player2_row ;
     HouseHole player1_hole;
     HouseHole player2_hole;
-    Player p1Player;
-    Player p2Player;
     public final Scanner input = new Scanner(System.in);
     int boardSize = -1;
     int beanNum = -1;
@@ -19,18 +17,19 @@ public class Board {
     public static boolean leftSow = true;
     public static boolean checkNextHole = false; 
     int selectBoard=-1;
+    int mode = -1;
+    public static String player1Name;
+    public static String player2Name;
 
     public int getStatus() {
         return status;
     }
     
-    public Board(ArrayList<BoardHole> p1BoardHole, ArrayList<BoardHole> p2BoardHole,HouseHole p1HouseHole, HouseHole p2HouseHole, Player p1Player, Player p2Player){
+    public Board(ArrayList<BoardHole> p1BoardHole, ArrayList<BoardHole> p2BoardHole,HouseHole p1HouseHole, HouseHole p2HouseHole){
         this.player1_row = p1BoardHole;
         this.player2_row = p2BoardHole;
         this.player1_hole = p1HouseHole;
         this.player2_hole = p2HouseHole;
-        this.p1Player = p1Player;
-        this.p2Player = p2Player;
     }
 
     public ArrayList<BoardHole> getPlayer1_row() {
@@ -71,6 +70,14 @@ public class Board {
     
     public void setBeanNum(int beanNum) {
         this.beanNum = beanNum;
+    }
+
+    public String getPlayer1Name() {
+        return player1Name;
+    }
+
+    public String getPlayer2Name() {
+        return player2Name;
     }
     
     public void setBoard(){
@@ -141,11 +148,34 @@ public class Board {
         for(int i =0; i < getBoardSize(); i++){
             player2_row.add(new BoardHole(getBeanNum()));
         }
-        //Creating player
-        Player P1 = new Player(1);
-        Player P2 = new Player(2);
-    }
 
+    }
+        public  void selectMode(){
+
+        System.out.println("Select game mode.\n1-Player1 Vs Player2\n2-Player1 Vs Computer");
+        while(mode == -1){
+            try{
+                mode = input.nextInt();
+                if(mode==1){
+                    System.out.println("Enter Player1's name:");
+                    player1Name = input.next();
+                    System.out.println("Enter Player2's name:");
+                    player2Name = input.next();
+                    break;
+                }else if(mode==2){
+                    System.out.println("Enter Player1's name:");
+                    player1Name = input.next();
+                    break;
+                }else{
+                    mode = -1;
+                    System.out.println("Invalid option\nPlease enter a valid option.");
+                }  
+            }catch(InputMismatchException e){
+                input.nextLine();
+                System.out.println("Invalid option\nPlease enter a valid option.");
+            }
+        } 
+    }
     public void displayBoard(ArrayList<BoardHole> player1_row, ArrayList<BoardHole> player2_row,HouseHole player1_hole, HouseHole player2_hole, int boardSize ){
        for(int i = 0; i < boardSize + 1; i++) {
             System.out.print("------");
@@ -196,12 +226,16 @@ public class Board {
         // end of printing row for player2_row
     }
     
-    public int selectHole(int mode, int playerTurn, int boardSize){
+    public int selectHole(int playerTurn, int boardSize){
         int move = -1; // Initialize move variable to be returned
+        String playerName;
+        if(playerTurn ==1){
+            playerName = player1Name;
+        }else playerName = player2Name;
         if(mode ==1 || playerTurn ==1){ // for player (not computer)
             while(move < 0 || move > boardSize - 1) { // while loop check if the move is valid (only permit values between 1 to (max boardsize) inclusive)
                 try { // try clause, catch error input (alphabet or symbol)
-                    System.out.printf("Player "+ playerTurn +", select the hole you would like to scoop (1 - %d): ", boardSize);// Prompt user to input a move
+                    System.out.printf( playerName +", select the hole you would like to scoop (1 - %d): ", boardSize);// Prompt user to input a move
                     move = Integer.parseInt(input.next()); // Take in user input
                     move--;
                         if(move < 0 || move > boardSize - 1) {
@@ -257,11 +291,15 @@ public class Board {
     }
 
     public void getResult(){
+        System.out.println("No more valid move.\n");
+        System.out.println("=====================");
+        System.out.println("|     GAME END      |");
+        System.out.println("=====================");
         if(player1_hole.getBean() == player2_hole.getBean()){
             System.out.println("DRAW");
         }else if(player1_hole.getBean()>player2_hole.getBean()){
-            System.out.println("Player 1 win!");
-        }else System.out.println("Playern 2 win!");
+            System.out.println("Congratulations,"+player1Name+"\nYou win the game!");
+        }else System.out.println("Congratulations," +player2Name+"\n You win the game!");
     }
 }
     

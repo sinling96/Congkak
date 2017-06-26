@@ -10,47 +10,70 @@ public class CongkakGame {
     public static ArrayList<BoardHole> player2_row = new ArrayList<BoardHole>();
     public static HouseHole player1_hole = new HouseHole(0);
     public static HouseHole player2_hole = new HouseHole(0);
-    public static int mode;
     public static int boardSize;
     public static int beanNum;
     public static int playerTurn = 1;
     public static int index;
     public static int beanInHand;      
     public static boolean leftSow = true;
-    public static boolean status = false;
+    public static int status = 0;
     public static boolean checkNextHole = false; 
+    public static Player P1;
+    public static Player P2;
     
     public static void main(String[] args) {
+        String playNext = "N";
         welcomeMessage();
-        mode = selectMode();   
-        setBoard();
-        Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole);
-        gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-        do{    
-            index = gameBoard.selectHole(mode,playerTurn, boardSize);
-            do{
-                if(playerTurn ==1){
-                    leftSow = true;
-                    beanInHand = player1_row.get(index).getBean();//get the number of bean taken from the hole selected
-                    player1_row.get(index).removeAll();// take all the seed from the hole selected by the user
-                }else{
-                    leftSow = false;
-                    beanInHand = player2_row.get(index).getBean();
-                    player2_row.get(index).removeAll();
-                }
+        do{
+            System.out.println("Select game mode.\n1-Player1 Vs Player2\n2-Player1 Vs Computer");
+           int mode = input.nextInt();
+           if(mode==1){
+               System.out.println("Enter Player1's name:");
+               String player1Name = input.next();
+               Player P1 = new Player(player1Name,1);
+               System.out.println("Enter Player2's name:");
+               String player2Name = input.next();
+               Player P2 = new Player(player2Name,2);
+           }else if(mode==2){
+               System.out.println("Enter Player1's name:");
+               String player1Name = input.next();
+               Player P1 = new Player(player1Name,1);
+               Player P2 = new Player("Computer",2);
+           }  
+           setBoard();
+           Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole, P1, P2);
+           gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
+        
+            do{    
+                index = gameBoard.selectHole(mode,playerTurn, boardSize);
                 do{
-                    sowing();
-                    gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-                    checkNextHole = checkNextHole();
-                }while(beanInHand>0);
-            }while(checkNext2Hole()==false);//discontinue if the next hole is empty 
-            if(playerTurn ==1){
-                playerTurn =2;
-            }else playerTurn =1;
-            status = checkGameStatus();
-            gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-        }while(status == false);//stop while all boardholes are empty
-       
+                    if(playerTurn ==1){
+                        leftSow = true;
+                        beanInHand = player1_row.get(index).getBean();//get the number of bean taken from the hole selected
+                        player1_row.get(index).removeAll();// take all the seed from the hole selected by the user
+                    }else{
+                        leftSow = false;
+                        beanInHand = player2_row.get(index).getBean();
+                        player2_row.get(index).removeAll();
+                    }
+                    do{
+                        sowing();
+                        gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
+                        checkNextHole = checkNextHole();
+                    }while(beanInHand>0);
+                }while(checkNext2Hole()==false);//discontinue if the next hole is empty 
+                if(playerTurn ==1){
+                    playerTurn =2;
+                }else playerTurn =1;
+                status = checkGameStatus();
+                gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
+            }while(status ==0);//none of the players' boardholes are all empty
+        if(status!=0){
+            result();
+            System.out.println("Play again? (Y/N)");
+            playNext = input.nextLine(); 
+        }
+        }while( playNext != "N" || playNext != "n" );
     }    
     private static void welcomeMessage(){
      System.out.println("========================");
@@ -60,6 +83,10 @@ public class CongkakGame {
 
     public static void setBoard(){
        System.out.println("Setting up board...");
+        player1_row.clear();
+        player2_row.clear();
+        player1_hole.setBean(0);
+        player2_hole.setBean(0);
        System.out.print("Please enter your board size (3 - 9): ");	
        boardSize = input.nextInt();
        while(boardSize < 3 || boardSize > 9) {	// Check for out of range inputs
@@ -84,25 +111,7 @@ public class CongkakGame {
             player2_row.add(new BoardHole(beanNum));
             }
     }
-           
-    public static int selectMode(){
-        System.out.println("Select game mode.\n1-Player1 Vs Player2\n2-Player1 Vs Computer");
-        mode = input.nextInt();
-        if(mode==1){
-            System.out.println("Enter Player1's name:");
-            String player1Name = input.next();
-            Player P1 = new Player(player1Name,1);
-            System.out.println("Enter Player2's name:");
-            String player2Name = input.next();
-            Player P2 = new Player(player2Name,2);
-        }else if(mode==2){
-            System.out.println("Enter Player1's name:");
-            String player1Name = input.next();
-            Player P1 = new Player(player1Name,1);
-            Player P2 = new Player("Computer",2);
-        }
-        return mode;
-    }
+
     public static void sowing(){
 
         while(beanInHand >0) {      // while there is still beans in hand
@@ -190,7 +199,7 @@ public class CongkakGame {
                     check2Hole = true;
                 }
             }else if(leftSow == false){
-                if(index < (boardSize-1) && player2_row.get(index+1).getBean()==0){
+                if(index < (boardSize-2) && player2_row.get(index+1).getBean()==0){
                     totalBean = player2_row.get(index+2).getBean();
                     player2_row.get(index+2).removeAll();
                     check2Hole = true;
@@ -205,48 +214,50 @@ public class CongkakGame {
                 }
             }
            if(playerTurn ==1){
-               player1_hole.addBean(totalBean);
-           }else player2_hole.addBean(totalBean);     
+               if(totalBean!=0){
+                   player1_hole.addBean(totalBean);
+                   System.out.println("Congratulations!\n"+"Player 1 earned " + totalBean + " beans.");
+               }else System.out.println("Sorry, Player 1.\n No bean is awarded.");
+               
+           }else{
+               if(totalBean != 0){
+                   player2_hole.addBean(totalBean);     
+                    System.out.println("Congratulations!\n"+"Player 2 earned " + totalBean + " beans.");
+               }else System.out.println("Sorry, Player 2.\nNo bean is awarded.");
+                
+           } 
         }
         return check2Hole;
     }
-    public static boolean checkGameStatus(){
-        int count = 0; 
+    public static int checkGameStatus(){
+        int count1 = 0; 
+        int count2 = 0;
         for(BoardHole i: player1_row) {
                 if(i.getBean() == 0) {
-                        count++;
+                        count1++;
                 } 
         }
         for(BoardHole i: player2_row){
             if(i.getBean() == 0){
-                count++;
+                count2++;
             }
         }
-        
-        if(count == (boardSize * 2)){
-            status = true;// all boardholes are empty
-        }else status = false;
+    
+        if(count1 == boardSize && playerTurn ==1){ // if player1 row is empty , and the next turn is player is player 1
+            status = 1; // board holes player 1 become all empty
+        }else if(count2 == boardSize && playerTurn ==2){
+            status = 2;// player 2's boardHole are all empty
+        }else status = 0;
         
         return status;
     }
     
+    public static void result(){
+        if(player1_hole.getBean() == player2_hole.getBean()){
+            System.out.println("DRAW");
+        }else if(player1_hole.getBean()>player2_hole.getBean()){
+            System.out.println("Player 1 win!");
+        }else System.out.println("Playern 2 win!");
+    }
+
 }
-
-
-
-    
-    
-//}
-//
-// Scanner inputFile = new Scanner(new File("C:/Test/test.txt"));
-//   Map<String, Integer> counts = new HashMap<>();
-//    while (inputFile.hasNextLine()) {
-//        String line = inputFile.nextLine();         
-//        for (String word : line.split(" ")) {
-//            Integer count = counts.get(word);
-//            counts.put(word, count == null ? 1 : count + 1);
-//        }
-//
-//    }
-//    System.out.println(counts);
-//

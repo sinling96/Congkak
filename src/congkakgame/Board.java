@@ -9,13 +9,17 @@ public class Board {
     ArrayList<BoardHole> player2_row = new ArrayList<BoardHole>();
     HouseHole player1_hole = new HouseHole(0);
     HouseHole player2_hole = new HouseHole(0);
+    Player p1Player;
+    Player p2Player;
     public final Scanner input = new Scanner(System.in);
     
-    public Board(ArrayList<BoardHole> p1BoardHole, ArrayList<BoardHole> p2BoardHole,HouseHole p1HouseHole, HouseHole p2HouseHole){
+    public Board(ArrayList<BoardHole> p1BoardHole, ArrayList<BoardHole> p2BoardHole,HouseHole p1HouseHole, HouseHole p2HouseHole, Player p1Player, Player p2Player){
         this.player1_row = p1BoardHole;
         this.player2_row = p2BoardHole;
         this.player1_hole = p1HouseHole;
         this.player2_hole = p2HouseHole;
+        this.p1Player = p1Player;
+        this.p2Player = p2Player;
     }
 
     public ArrayList<BoardHole> getPlayer1_row() {
@@ -112,10 +116,10 @@ public class Board {
 				if(move < 0 || move > boardSize - 1) {
 					System.out.println("Invalid move!!"); // Prompt error
 					continue;
-                                } else if (playerTurn == 1 && (player1_row.get(move).equals(0))) { //cannot choose the hole without seed
+                                } else if (playerTurn == 1 && (player1_row.get(move).getBean()==0)) { //cannot choose the hole without seed
 					System.out.println("Invalid move!!"); // Prompt error
 					move = -1;
-				} else if (playerTurn == 2  && (player2_row.get(move).equals(0))) { // cannot choose the hole without seed
+				} else if (playerTurn == 2  && (player2_row.get(move).getBean()==0)) { // cannot choose the hole without seed
 					System.out.println("Invalid move!!"); // Prompt error
 					move = -1;
 				} else if(move >= 0 && move <= boardSize - 1) { // Check for valid move
@@ -129,8 +133,8 @@ public class Board {
             } // end while
 		
         }else if(mode ==2 && playerTurn ==2){ // for computer to choose seed
-		while(move < 0 || move > boardSize - 1) { // while loop check if the move is valid (only permit values between 1 to 7 inclusive)	
-			move = (int) (Math.random() * boardSize);		
+		while(move < 0 || move > boardSize - 1) { // while loop check if the move is valid (only permit values between 1 to 7 inclusive
+                        move = (int) (Math.random() * boardSize);//need to modified		
 			if(move < 0 || move > boardSize - 1) {
 				continue;
 			} else if (player2_row.get(move).equals(0)) {

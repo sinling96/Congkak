@@ -11,25 +11,24 @@ public class CongkakGame {
     public static ArrayList<BoardHole> player2_row = new ArrayList<BoardHole>();
     public static HouseHole player1_hole = new HouseHole(0);
     public static HouseHole player2_hole = new HouseHole(0);
-    public static int boardSize;
-    public static int beanNum;
     public static int playerTurn = 1;
     public static int index;
     public static int beanInHand;      
     public static boolean leftSow = true;
-    public static int status = 0;
     public static boolean checkNextHole = false; 
     public static Player P1;
     public static Player P2;
     public static int mode = -1;
+    public static int boardSize;
     public static void main(String[] args) {
-        String playNext = "N";
+        String playNext = "A";
         
         welcomeMessage();
         do{
            selectMode();
-           setBoard();
            Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole, P1, P2);
+           gameBoard.setBoard();
+           boardSize = gameBoard.getBoardSize();
            gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
             do{    
                 index = gameBoard.selectHole(mode,playerTurn, boardSize);
@@ -49,18 +48,36 @@ public class CongkakGame {
                         checkNextHole = checkNextHole();
                     }while(beanInHand>0);
                 }while(checkNext2Hole()==false);//discontinue if the next hole is empty 
-                if(playerTurn ==1){
+                if(playerTurn ==1){ // switch the player
                     playerTurn =2;
                 }else playerTurn =1;
-                status = checkGameStatus();
+                gameBoard.checkGameStatus(playerTurn);
                 gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-            }while(status ==0);//none of the players' boardholes are all empty
-        if(status!=0){
-            result();
-            System.out.println("Play again? (Y/N)");
-            playNext = input.nextLine(); 
+            }while(gameBoard.getStatus() ==0);//none of the players' boardholes are all empty
+        if(gameBoard.getStatus()!=0){
+            gameBoard.getResult();
+            
+            input.nextLine();
+            while(playNext.equalsIgnoreCase("A")  ){
+                System.out.println("Play again? (Y/N)");
+                try{
+                    playNext = input.nextLine();
+                    if(playNext.equalsIgnoreCase("Y")){
+                        break;
+                    }else if(playNext.equalsIgnoreCase("N")){
+                        break;
+                    }else{
+                        throw new IllegalArgumentException("Invalid key.\nPlease enter a valid option.");
+                        
+                    }
+                }catch (IllegalArgumentException e){
+                    playNext="A";
+                    System.out.println(e.getMessage());
+                }
+            }
+            
         }
-        }while( playNext != "N" || playNext != "n" );
+        }while( playNext.equalsIgnoreCase("Y") );
     }    
     private static void welcomeMessage(){
      System.out.println("========================");
@@ -97,46 +114,6 @@ public class CongkakGame {
             }
     }
         
-    }
-
-    public static void setBoard(){
-       
-        player1_row.clear();
-        player2_row.clear();
-        player1_hole.setBean(0);
-        player2_hole.setBean(0);
-        System.out.println("Select:\n1-Basic Board\n2-Intermediate Board\n");
-        int selectBoard = input.nextInt();
-        if(selectBoard == 1){
-            boardSize = 7;
-            beanNum =4;
-        }else if(selectBoard ==2){
-            System.out.print("Please enter your board size (3 - 9): ");	
-            boardSize = input.nextInt();
-            while(boardSize < 3 || boardSize > 9) {	// Check for out of range inputs
-                            System.out.println("Error board size input");
-                            System.out.print("Please enter your board size (3 - 9): ");
-                            boardSize = input.nextInt();
-            }	// end while
-
-            System.out.print("How many beans in each hole (2 - 7): ");	// Prompt input
-            beanNum = input.nextInt();	// Get user input and store in beans
-            while(beanNum < 2 || beanNum > 7) {	// Check for out of range inputs
-                    System.out.println("Error beans number input");
-                    System.out.print("How many beans in each hole (2 - 7): ");	// Prompt input
-                    beanNum = input.nextInt();
-            }	// end while
-        }
-        System.out.println("Setting up board...");
-       
-       
-        //Creating requested holes with the user's requested bean number for Game Board
-        for(int i =0; i < boardSize; i++){
-            player1_row.add(new BoardHole(beanNum));
-            }
-        for(int i =0; i < boardSize; i++){
-            player2_row.add(new BoardHole(beanNum));
-            }
     }
 
     public static void sowing(){
@@ -256,35 +233,4 @@ public class CongkakGame {
         }
         return check2Hole;
     }
-    public static int checkGameStatus(){
-        int count1 = 0; 
-        int count2 = 0;
-        for(BoardHole i: player1_row) {
-                if(i.getBean() == 0) {
-                        count1++;
-                } 
-        }
-        for(BoardHole i: player2_row){
-            if(i.getBean() == 0){
-                count2++;
-            }
-        }
-    
-        if(count1 == boardSize && playerTurn ==1){ // if player1 row is empty , and the next turn is player is player 1
-            status = 1; // board holes player 1 become all empty
-        }else if(count2 == boardSize && playerTurn ==2){
-            status = 2;// player 2's boardHole are all empty
-        }else status = 0;
-        
-        return status;
-    }
-    
-    public static void result(){
-        if(player1_hole.getBean() == player2_hole.getBean()){
-            System.out.println("DRAW");
-        }else if(player1_hole.getBean()>player2_hole.getBean()){
-            System.out.println("Player 1 win!");
-        }else System.out.println("Playern 2 win!");
-    }
-
 }

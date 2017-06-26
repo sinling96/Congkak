@@ -2,6 +2,7 @@
 package congkakgame;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CongkakGame {
@@ -20,30 +21,16 @@ public class CongkakGame {
     public static boolean checkNextHole = false; 
     public static Player P1;
     public static Player P2;
-    
+    public static int mode = -1;
     public static void main(String[] args) {
         String playNext = "N";
+        
         welcomeMessage();
         do{
-            System.out.println("Select game mode.\n1-Player1 Vs Player2\n2-Player1 Vs Computer");
-           int mode = input.nextInt();
-           if(mode==1){
-               System.out.println("Enter Player1's name:");
-               String player1Name = input.next();
-               Player P1 = new Player(player1Name,1);
-               System.out.println("Enter Player2's name:");
-               String player2Name = input.next();
-               Player P2 = new Player(player2Name,2);
-           }else if(mode==2){
-               System.out.println("Enter Player1's name:");
-               String player1Name = input.next();
-               Player P1 = new Player(player1Name,1);
-               Player P2 = new Player("Computer",2);
-           }  
+           selectMode();
            setBoard();
            Board gameBoard = new Board(player1_row, player2_row, player1_hole, player2_hole, P1, P2);
            gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-        
             do{    
                 index = gameBoard.selectHole(mode,playerTurn, boardSize);
                 do{
@@ -80,6 +67,37 @@ public class CongkakGame {
      System.out.println("Welcome to Congkak Game!");
      System.out.println("========================");
     }    
+    
+    public static void selectMode(){
+    System.out.println("Select game mode.\n1-Player1 Vs Player2\n2-Player1 Vs Computer");
+    while(mode == -1){
+        try{
+                mode = input.nextInt();
+                if(mode==1){
+                    System.out.println("Enter Player1's name:");
+                    String player1Name = input.next();
+                    Player P1 = new Player(player1Name,1);
+                    System.out.println("Enter Player2's name:");
+                    String player2Name = input.next();
+                    Player P2 = new Player(player2Name,2);
+                    break;
+                }else if(mode==2){
+                    System.out.println("Enter Player1's name:");
+                    String player1Name = input.next();
+                    Player P1 = new Player(player1Name,1);
+                    Player P2 = new Player("Computer",2);
+                    break;
+                }else{
+                    mode = -1;
+                    System.out.println("Invalid option\nPlease enter a valid option.");
+                }  
+            }catch(InputMismatchException e){
+                input.nextLine();
+                System.out.println("Invalid option\nPlease enter a valid option.");
+            }
+    }
+        
+    }
 
     public static void setBoard(){
        

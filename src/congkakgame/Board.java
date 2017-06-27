@@ -165,6 +165,7 @@ public class Board {
                 }else if(mode==2){
                     System.out.println("Enter Player1's name:");
                     player1Name = input.next();
+                    player2Name = "Computer";
                     break;
                 }else{
                     mode = -1;
@@ -257,7 +258,8 @@ public class Board {
             } // end while	
         }else if(mode ==2 && playerTurn ==2){ // for computer to choose seed
             while(move < 0 || move > boardSize - 1) { // while loop check if the move is valid (only permit values between 1 to 7 inclusive
-                move = (int) (Math.random() * boardSize);//need to modified		
+                move = (int) (Math.random() * boardSize);//need to modified
+                System.out.println("\nComputer's Turn\nHole selected: "+ move);
                 if(move < 0 || move > boardSize - 1) {
                     continue;
                 } else if (player2_row.get(move).equals(0)) {

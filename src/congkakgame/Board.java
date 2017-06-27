@@ -2,6 +2,7 @@
 package congkakgame;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -179,33 +180,38 @@ public class Board {
     }
     public void displayBoard(ArrayList<BoardHole> player1_row, ArrayList<BoardHole> player2_row,HouseHole player1_hole, HouseHole player2_hole, int boardSize ){
        for(int i = 0; i < boardSize + 1; i++) {
-            System.out.print("------");
+            System.out.print("--------");
         }
-	System.out.println("-------");
+        for(int i = 0; i<boardSize-1 ; i++){
+            System.out.printf("-");
+        }
+        System.out.printf("\n");
         //printing player1_row
         System.out.print("|     ");
         for(BoardHole i: player1_row) {
             if(i.getBean() >= 10) {
-                System.out.printf("| "+ i.getBean()+"   ");
+                System.out.printf("|  "+ i.getBean()+"  ");
             } else {
-                System.out.printf("|  "+ i.getBean()+"  ");	
+                System.out.printf("|  "+ i.getBean()+"   ");	
             }
         }
         System.out.print("|     |\n");
         //end of player1_row
         //printing row for houseHole
         if(player1_hole.getBean() >= 10) {
-            System.out.printf("| %d  |", player1_hole.getBean());
+            System.out.printf("|  %d |", player1_hole.getBean());
         } else {
             System.out.printf("|  %d  |", player1_hole.getBean());
         }
 		
-        for(int i = 0; i < boardSize - 1; i++) {
+        for(int i = 0; i < boardSize; i++) {
             System.out.printf("------");
         }
-        System.out.print("-----");
+        for(int i = 0; i<boardSize-1 ; i++){
+            System.out.printf("-");
+        }
 	if(player2_hole.getBean() >= 10) {
-            System.out.printf("| %d  |", player2_hole.getBean());
+            System.out.printf("|  %d |", player2_hole.getBean());
         } else {
             System.out.printf("|  %d  |", player2_hole.getBean());
         }	
@@ -214,17 +220,19 @@ public class Board {
         System.out.print("\n|     ");
         for(BoardHole i: player2_row) {
             if(i.getBean() >= 10) {
-                System.out.printf("| "+ i.getBean()+"   ");
+                System.out.printf("|  "+ i.getBean()+"  ");
             } else {
-                System.out.printf("|  "+ i.getBean()+"  ");	
+                System.out.printf("|  "+ i.getBean()+"   ");	
             }
         }
         System.out.print("|     |\n");
         for(int i = 0; i < boardSize + 1; i++) {
-            System.out.print("------");
+            System.out.print("--------");
         }
-	System.out.println("-------");
-        // end of printing row for player2_row
+	for(int i = 0; i<boardSize-1 ; i++){
+            System.out.print("-");
+        }
+        System.out.print("\n");
     }
     
     public int selectHole(int playerTurn, int boardSize){
@@ -257,43 +265,47 @@ public class Board {
                     }
             } // end while	
         }else if(mode ==2 && playerTurn ==2){ // for computer to choose seed
-            while(move < 0 || move > boardSize - 1) { // while loop check if the move is valid (only permit values between 1 to 7 inclusive
-                move = (int) (Math.random() * boardSize);//need to modified
-                System.out.println("\nComputer's Turn\nHole selected: "+ move);
-                if(move < 0 || move > boardSize - 1) {
-                    continue;
-                } else if (player2_row.get(move).equals(0)) {
-                    move = -1;
-                } else if(move >= 0 && move <= boardSize - 1) { // Check for valid move
-                    break; // Break the loop if the move is valid
-                }		
-            } // end while
+            move=-1;
+            System.out.println("\nComputer's Turn\n");
+            move = smarterMove();
+            System.out.println("Hole selected: "+ move);
+            move--;
         }
        	return move; // Return valid user input
     }
-    public int checkGameStatus(int playerTurn){
+    public void checkGameStatus(int playerTurn){
         int count1 = 0; 
         int count2 = 0;
+        int remainingSeed = 0;
         for(BoardHole i: player1_row) {
             if(i.getBean() == 0) {
                 count1++;
-            } 
+            } else{
+                remainingSeed+= i.getBean();
+            }
         }
         for(BoardHole i: player2_row){
             if(i.getBean() == 0){
                 count2++;
+            }else{
+                remainingSeed+= i.getBean();
             }
         }
-        if(count1 == boardSize && playerTurn ==1){ // if player1 row is empty , and the next turn is player is player 1
-            status = 1; // board holes player 1 become all empty
-        }else if(count2 == boardSize && playerTurn ==2){
-            status = 2;// player 2's boardHole are all empty
-        }else status = 0;
-        return status;
+        if(count1+count2 >= (boardSize*2) -1 && remainingSeed <=1){
+            System.out.println("endgame");
+            status = 0;//game stop
+        }else if(count1 == boardSize && playerTurn ==1 && remainingSeed > 1){ // if player1 row is empty , and the next turn is player is player 1
+            status = 1; // board holes player 1 become all empty, game does not stop
+            System.out.println(Board.player1Name+"'s holes are all empty.");
+        }else if(count2 == boardSize && playerTurn ==2 && remainingSeed >1){
+            status = 2;// player 2's boardHole are all empty , game does not stop
+            System.out.println(Board.player2Name+"'s holes are all empty.");
+        }else{
+            status = 3;
+        }
     }
 
     public void getResult(){
-        System.out.println("No more valid move.\n");
         System.out.println("=====================");
         System.out.println("|     GAME END      |");
         System.out.println("=====================");
@@ -301,7 +313,38 @@ public class Board {
             System.out.println("DRAW");
         }else if(player1_hole.getBean()>player2_hole.getBean()){
             System.out.println("Congratulations,"+player1Name+"\nYou win the game!");
-        }else System.out.println("Congratulations," +player2Name+"\n You win the game!");
+        }else {if(mode==1){
+                System.out.println("Congratulations," +player2Name+"\n You win the game!");
+            }else System.out.println("You lose the game.");
+        }
+    }
+    private int smarterMove(){
+        int tempMove =0;
+        int minBean = player2_row.get(0).getBean(); // initialise minMove
+        do{
+            for(BoardHole i: player2_row) {
+                if(i.getBean() == boardSize - (player2_row.indexOf(i) )+1) { 
+                    tempMove = player2_row.indexOf(i);
+                    break;
+                }else if(i.getBean() != boardSize - (player2_row.indexOf(i)+1) ){
+                    if(i.getBean() == 2*(boardSize - (player2_row.indexOf(i)+1))){
+                        tempMove = player2_row.indexOf(i);
+                        break;
+                    }else{
+                        if(i.getBean()<minBean){
+                            minBean = i.getBean();
+                            tempMove = player2_row.indexOf(i);
+                            break;
+                        }else{
+                            tempMove = (int) (Math.random() * boardSize); 
+                            break;
+                        }
+                    }
+                }
+            }
+            
+        }while(player2_row.get(tempMove).getBean()==0);
+        return tempMove +1;
     }
 }
     

@@ -51,8 +51,16 @@ public class CongkakGame {
                 }else playerTurn =1;
                 gameBoard.checkGameStatus(playerTurn);
                 gameBoard.displayBoard(player1_row, player2_row, player1_hole, player2_hole, boardSize);
-            }while(gameBoard.getStatus() ==0);//none of the players' boardholes are all empty
-            if(gameBoard.getStatus()!=0){
+                //skip player
+                if(gameBoard.getStatus()==1) {
+                    playerTurn =2;
+                    System.out.println("Skip "+Board.player1Name+"'s turn");
+                }else if(gameBoard.getStatus()==2){
+                    playerTurn =1;
+                    System.out.println("Skip "+Board.player2Name+"'s turn");
+                }
+            }while(gameBoard.getStatus()!=0);//none of the players' boardholes are all empty
+            if(gameBoard.getStatus()==0){
                 gameBoard.getResult();
                 playNext = askForNextPlay();
             }
